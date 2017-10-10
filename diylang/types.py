@@ -12,11 +12,12 @@ class DiyLangError(Exception):
     """General DIY Lang error class."""
     pass
 
-
 class Closure:
 
     def __init__(self, env, params, body):
-        raise NotImplementedError("DIY")
+        self.env = env
+        self.params = params
+        self.body = body
 
     def __repr__(self):
         return "<closure/%d>" % len(self.params)
@@ -28,13 +29,21 @@ class Environment:
         self.bindings = variables if variables else {}
 
     def lookup(self, symbol):
-        raise NotImplementedError("DIY")
+
+        if symbol not in self.bindings:
+            raise DiyLangError("%s" %symbol)
+
+        return self.bindings[symbol]
 
     def extend(self, variables):
-        raise NotImplementedError("DIY")
+        new_environment = Environment(self.bindings.copy());
+        new_environment.bindings.update(variables)
+        return new_environment
 
     def set(self, symbol, value):
-        raise NotImplementedError("DIY")
+        if symbol in self.bindings:
+            raise DiyLangError("already defined")
+        self.bindings[symbol]= value
 
 
 class String:

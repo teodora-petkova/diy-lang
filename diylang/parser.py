@@ -14,8 +14,32 @@ the evaluator can understand.
 def parse(source):
     """Parse string representation of one *single* expression
     into the corresponding Abstract Syntax Tree."""
+    source = remove_comments(source)
+    source = source.strip()
 
-    raise NotImplementedError("DIY")
+    if source == "#t":
+        return True
+    elif source == "#f":
+        return False
+    elif source.isdigit():
+        return int(source)
+    elif source.startswith("'"):
+        return ["quote", parse(source[1:])]
+    elif source.startswith("("):
+        closing_parenthesis_index = find_matching_paren(source)
+        if(closing_parenthesis_index != len(source) - 1):
+            raise DiyLangError("Expected EOF")
+        source_without_outer_parentheses = source[1:len(source)-1]
+
+        ast_list = []
+        for x in split_exps(source_without_outer_parentheses):
+            ast_list.append(parse(x.strip()))
+        return ast_list
+    else:
+        return source
+
+
+    #raise NotImplementedError("DIY")
 
 #
 # Below are a few useful utility functions. These should come in handy when
