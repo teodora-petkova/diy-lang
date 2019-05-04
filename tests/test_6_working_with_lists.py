@@ -29,6 +29,16 @@ def test_creating_list_with_cons():
     result = evaluate(parse("(cons 0 '(1 2 3))"), Environment())
     assert_equals(parse("(0 1 2 3)"), result)
 
+def test_creating_list_with_cons_does_not_modify_initial_list():
+    """TEST 6.2.1: The `cons` functions prepends an element to the front of a list without modifying the intial list."""
+
+    env = Environment({"initial_list": [1, 2, 3]})
+
+    result = evaluate(parse("(cons 0 initial_list)"), env)
+    assert_equals(parse("(0 1 2 3)"), result)
+
+    assert_equals([1, 2, 3], env.lookup("initial_list"))
+
 
 def test_creating_longer_lists_with_only_cons():
     """TEST 6.3: `cons` needs to evaluate it's arguments.

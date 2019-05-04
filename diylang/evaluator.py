@@ -151,9 +151,9 @@ def evaluate_function_in_enviroment(ast, env):
     return evaluate(expressions_list, env)
 
 def evaluate_cons(ast, env):
-    new_list = evaluate(ast[2], env)
-    new_list.insert(0, evaluate(ast[1], env))
-    return new_list
+    head = evaluate(ast[1], env)
+    tail = evaluate(ast[2], env)
+    return [head] + tail
 
 def evaluate_head(ast, env):
     expected_list = evaluate(ast[1:][0], env)
@@ -179,4 +179,3 @@ def evaluate_empty(ast, env):
         return True
     else:
         return False
-
