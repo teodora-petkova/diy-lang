@@ -56,8 +56,7 @@ def evaluate(ast, env):
             return evaluate_function_in_enviroment(ast, env)
         elif is_list(ast[0]):
             expressions_list = [evaluate(ast[0], env)]
-            for param in ast[1:]:
-                expressions_list.append(evaluate(param, env))
+            expressions_list.extend([param for param in ast[1:]])
             return evaluate(expressions_list, env)
         else:
           raise DiyLangError("not a function")
@@ -66,7 +65,6 @@ def evaluate(ast, env):
 
     """Evaluate an Abstract Syntax Tree in the specified environment."""
     #raise NotImplementedError("DIY")\
-
 
 def is_math_expression(ast):
     return ast[0] in math_expressions
@@ -109,7 +107,6 @@ def evaluate_define_expression(ast, env):
         raise DiyLangError("not a symbol")
     env.set(ast[1], evaluate(ast[2], env))
 
-
 def evaluate_if_expression(ast, env):
     if evaluate(ast[1], env) == True:
         return evaluate(ast[2], env)
@@ -150,14 +147,13 @@ def evaluate_function_in_enviroment(ast, env):
     function_name = ast[0]
     function_expression_in_enviroment = env.lookup(ast[0])
     expressions_list = [function_expression_in_enviroment]
-    for param in ast[1:]:
-        expressions_list.append(param)
+    expressions_list.extend([param for param in ast[1:]])
     return evaluate(expressions_list, env)
 
 def evaluate_cons(ast, env):
     new_list = evaluate(ast[2], env)
     new_list.insert(0, evaluate(ast[1], env))
-    return evaluate( ["quote", new_list], env)
+    return new_list
 
 def evaluate_head(ast, env):
     expected_list = evaluate(ast[1:][0], env)
@@ -165,7 +161,7 @@ def evaluate_head(ast, env):
         raise DiyLangError()
     if len(expected_list) == 0 :
         raise DiyLangError()
-    return evaluate(["quote", expected_list[0]], env)
+    return expected_list[0]
 
 def evaluate_tail(ast, env):
     expected_list = evaluate(ast[1:][0], env)
@@ -173,7 +169,7 @@ def evaluate_tail(ast, env):
         raise DiyLangError()
     if len(expected_list) == 0 :
         raise DiyLangError()
-    return evaluate(["quote", expected_list[1:]], env)
+    return expected_list[1:]
 
 def evaluate_empty(ast, env):
     expected_list = evaluate(ast[1:][0], env)
