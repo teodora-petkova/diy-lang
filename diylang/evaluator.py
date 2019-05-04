@@ -151,7 +151,7 @@ def evaluate_function_in_enviroment(ast, env):
     function_expression_in_enviroment = env.lookup(ast[0])
     expressions_list = [function_expression_in_enviroment]
     for param in ast[1:]:
-        expressions_list.append(evaluate(param, env))
+        expressions_list.append(param)
     return evaluate(expressions_list, env)
 
 def evaluate_cons(ast, env):
