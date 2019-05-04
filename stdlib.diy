@@ -51,9 +51,63 @@
             0
             (+ (head l) (sum (tail l))))))
 
-
 (define range
 	(lambda (a b)
 		(if (> a b)
 			'()
-			(cons a (range (+ a 1) b))))) 
+			(cons a (range (+ a 1) b)))))
+
+(define append
+    (lambda (a b)
+        (if (and (empty a) (empty b))
+            '()
+            (if (empty a)
+                b
+                (if (empty b)
+                    a
+                    (cons (head a) (append (tail a) b)))))))
+
+(define reverse
+    (lambda (l)
+        (if (empty l)
+            '()
+            (append (reverse (tail l)) (cons (head l) '())))))
+
+(define filter
+    (lambda (condition l)
+        (if (empty l)
+            '()
+            (if (condition (head l))
+                (cons (head l) (filter condition (tail l)))
+                (filter condition (tail l))))))
+
+(define map
+    (lambda (function l)
+        (if (empty l)
+            '()
+            (cons (function (head l)) (map function (tail l))))))
+
+(define reduce
+    (lambda (function initial_value l)
+        (if (empty l)
+            initial_value
+            (reduce function (function (head l) initial_value) (tail l)))))
+
+(define get_smaller_than
+    (lambda (a l)
+        (if (empty l)
+            '()
+            (filter (lambda (b) (> a b)) l))))
+
+(define get_bigger_than
+    (lambda (a l)
+        (if (empty l)
+            '()
+            (filter (lambda (b) (<= a b)) l))))
+
+(define sort
+    (lambda (l)
+        (if (empty l)
+            '()
+             (append (sort (get_smaller_than (head l) (tail l))) (cons (head l) (sort (get_bigger_than (head l) (tail l))))))))
+

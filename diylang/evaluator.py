@@ -53,7 +53,7 @@ def evaluate(ast, env):
         elif ast[0] == "empty":
             return evaluate_empty(ast, env)
         elif is_function_in_environment(ast, env):
-            return evaluate_function_in_enviroment(ast, env)
+            return evaluate_function_in_environment(ast, env)
         elif is_list(ast[0]):
             expressions_list = [evaluate(ast[0], env)]
             expressions_list.extend([param for param in ast[1:]])
@@ -143,10 +143,10 @@ def evaluate_closure_with_free_variables(ast, env):
 def is_function_in_environment(ast, env):
     return is_symbol(ast[0]) and env.lookup(ast[0]) != None
 
-def evaluate_function_in_enviroment(ast, env):
+def evaluate_function_in_environment(ast, env):
     function_name = ast[0]
-    function_expression_in_enviroment = env.lookup(ast[0])
-    expressions_list = [function_expression_in_enviroment]
+    function_expression_in_environment = env.lookup(ast[0])
+    expressions_list = [function_expression_in_environment]
     expressions_list.extend([param for param in ast[1:]])
     return evaluate(expressions_list, env)
 
@@ -172,7 +172,7 @@ def evaluate_tail(ast, env):
     return expected_list[1:]
 
 def evaluate_empty(ast, env):
-    expected_list = evaluate(ast[1:][0], env)
+    expected_list = evaluate(ast[1], env)
     if not is_list(expected_list):
         raise DiyLangError()
     if len(expected_list) == 0 :
