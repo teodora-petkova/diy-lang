@@ -19,11 +19,7 @@ math_expressions = ["eq", "-", "+", "*", "/", "//", "mod", ">"]
 def evaluate(ast, env):
     #print(ast)
 
-    if is_boolean(ast):
-        return ast
-    elif is_integer(ast):
-        return ast
-    elif is_symbol(ast):
+    if is_symbol(ast):
         return env.lookup(ast)
     elif is_closure(ast):
         return evaluate_closure(ast, env)
@@ -42,6 +38,8 @@ def evaluate(ast, env):
             return evaluate_lambda_expression(ast, env)
         elif ast[0] == "if":
             return evaluate_if_expression(ast, env)
+        elif ast[0] == "cond":
+            return evaluate_cond(ast, env)
         elif is_math_expression(ast):
             return evaluate_math_expression(ast, env)
         elif ast[0] == "cons":
@@ -60,9 +58,8 @@ def evaluate(ast, env):
             return evaluate(expressions_list, env)
         else:
           raise DiyLangError("not a function")
-    else:
-        raise DiyLangError("Wrong number of arguments")
 
+    return ast
     """Evaluate an Abstract Syntax Tree in the specified environment."""
     #raise NotImplementedError("DIY")\
 
@@ -112,6 +109,17 @@ def evaluate_if_expression(ast, env):
         return evaluate(ast[2], env)
     else:
         return evaluate(ast[3], env)
+
+def evaluate_cond(ast, env):
+    conditions = ast[1]
+    i=0
+    while i < len(ast):
+        condition = conditions[i][0]
+        value = conditions[i][1]
+        if(evaluate(condition, env)):
+            return evaluate(value, env)
+        i = i + 1
+    return False
 
 def evaluate_lambda_expression(ast, env):
     if len(ast) != 3:
